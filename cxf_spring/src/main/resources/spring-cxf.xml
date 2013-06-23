@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="hello" class="com.blankyin.cxf.impl.HelloWorldImpl" />
+
+	<bean id="serverPasswordCallback" class="com.blankyin.handler.ServerPasswordCallback" />
+
+	<!-- 发布服务 -->
+	<jaxws:endpoint id="helloWorld" implementor="#hello"
+		address="/HelloWorld">
+		<!-- 拦截器 -->
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingInInterceptor" />	<!-- 系统自带日志拦截器 -->
+			
+			<!-- <bean class="com.blankyin.interceptor.AuthInterceptor" /> -->			<!-- 自定义权限拦截器 -->
+
+			<!-- WSS4j 安全认证
+				action: 		UsernameToken 	指使用用户名令牌
+				passwordType: 	PasswordText 	指密码加密策略，这里直接文本 
+				user: 			FHDServer 		指别名 
+				passwordCallBackRef: serverPasswordCallback 指消息验证 
+			-->
+			<!-- SAAJInInterceptor只在CXF是2.0.X版本时或之前版本时才是必须的 
+			<bean class="org.apache.cxf.binding.soap.saaj.SAAJInInterceptor" />
+			-->
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="UsernameToken" />
+						<entry key="passwordType" value="PasswordDigest" />	<!-- 密码加密 -->
+						<entry key="user" value="FHDServer" />
+						<entry key="passwordCallbackRef">
+							<ref bean="serverPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</jaxws:inInterceptors>
+
+		<jaxws:outInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor" />	<!-- 系统自带日志拦截器 -->
+		</jaxws:outInterceptors>
+	</jaxws:endpoint>
+
+</beans>

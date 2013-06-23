@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+	
+	
+	<bean id="clientPasswordCallback" class="com.blankyin.handler.ClientPasswordCallback" />
+	
+	<jaxws:client id="client"
+		address="http://localhost:8080/cxf_spring/ws/HelloWorld"
+		serviceClass="com.blankyin.cxf.HelloWorld">
+		<jaxws:outInterceptors>
+			<!-- 自定义Header拦截器 -->
+			<!-- 
+			<bean class="com.blankyin.interceptor.AddHeaderInterceptor">
+				<constructor-arg name="username" value="admin" />
+				<constructor-arg name="password" value="123456" />
+			</bean>
+			-->
+		
+			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
+			
+			<!-- SAAJInInterceptor只在CXF是2.0.X版本时或之前版本时才是必须的 
+			<bean class="org.apache.cxf.binding.soap.saaj.SAAJInInterceptor"/>
+			-->
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="UsernameToken" />
+						<entry key="passwordType" value="PasswordDigest" />	<!-- 密码加密 -->
+						<entry key="user" value="FHDClient" />
+						<entry key="passwordCallbackRef">
+							<ref bean="clientPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</jaxws:outInterceptors>
+	</jaxws:client>
+</beans>
