@@ -1,5 +1,5 @@
 项目名称：
-============================
+=================================================
 cxf-demo
 
 1. 该项目主要为学习使用CXF时所写的测试代码，包含cxf-spring（Server）和cxf-client（Client）；
@@ -10,7 +10,7 @@ cxf-demo
 
 
 cxf-spring说明：
-============================
+=================================================
 1. com.blankyin.cxf.HelloWorld 中包含3个接口，主要用于测试基本数据类型，List和JavaBean以及CXF无法直接进行处理的Map；
 2. com.blankyin.interceptor.AuthInterceptor 是自定义的权限拦截器，主要通过header头消息进行权限验证；
 3. 项目有使用WSS4j进行安全认证测试（com.blankyin.handler.ServerPasswordCallback），此处需要注意的是：
@@ -22,7 +22,7 @@ cxf-spring说明：
 
 
 cxf-spring服务端启动方法：
-============================
+=================================================
 1. 进入cxf-spring目录；
 2. 执行eclipse.bat；
 3. 执行jetty_run.bat，启动Jetty服务器；
@@ -30,7 +30,7 @@ cxf-spring服务端启动方法：
 
 
 cxf-client客户端调用方法：
-============================
+=================================================
 1. 先启动cxf-spring中的Jetty服务器；
 2. 找到SpringClient.java即可调用执行。
 备注：cxf-client中有通过使用wsdl2java命令自动生成代码。
